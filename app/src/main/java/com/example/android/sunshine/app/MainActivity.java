@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        List<String> forecasts = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            forecasts.add("Today - Sunny - 88/63");
-        }
+
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -63,6 +61,14 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            List<String> weekForecast = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                weekForecast.add("Today - Sunny - 88/63");
+            }
+
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
