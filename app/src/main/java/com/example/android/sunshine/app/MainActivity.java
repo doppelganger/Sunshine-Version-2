@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
 
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ListView listView = (ListView) getActivity().findViewById(R.id.listview_forecast);
+            ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 
             listView.setAdapter(arrayAdapter);
             return rootView;
