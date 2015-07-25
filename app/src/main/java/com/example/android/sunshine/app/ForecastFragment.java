@@ -35,6 +35,8 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    private ArrayAdapter<String> mForecastAdapter;
+
     public ForecastFragment() {
     }
 
@@ -43,16 +45,14 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         List<String> weekForecast = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            weekForecast.add("Today - Sunny - 88/63");
-        }
+        weekForecast.add("Refresh for data.");
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 
-        listView.setAdapter(arrayAdapter);
+        listView.setAdapter(mForecastAdapter);
 
         return rootView;
     }
@@ -111,7 +111,6 @@ public class ForecastFragment extends Fragment {
                         appendQueryParameter("units", units).appendQueryParameter("cnt", numDays);
 
                 String urlString = builder.build().toString();
-                Log.d("URL STRING:", urlString);
                 URL url = new URL(urlString);
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -141,7 +140,6 @@ public class ForecastFragment extends Fragment {
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
-                Log.d(LOG_TAG, forecastJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -189,6 +187,16 @@ public class ForecastFragment extends Fragment {
 
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
+        }
+
+        @Override
+        protected void onPostExecute(String[] strings) {
+            super.onPostExecute(strings);
+            mForecastAdapter.clear();
+            for (String item : strings) {
+                mForecastAdapter.add(item);
+            }
+
         }
 
         /**
@@ -259,10 +267,6 @@ public class ForecastFragment extends Fragment {
 
                 highAndLow = formatHighLows(high, low);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
-            }
-
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
             }
             return resultStrs;
         }
