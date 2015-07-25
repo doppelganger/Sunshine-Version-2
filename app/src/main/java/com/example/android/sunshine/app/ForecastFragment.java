@@ -1,5 +1,6 @@
 package com.example.android.sunshine.app;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,16 +51,18 @@ public class ForecastFragment extends Fragment {
 
         mForecastAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
 
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int duration = Toast.LENGTH_SHORT;
+            // Executed in an Activity, so 'this' is the Context
+                Intent textIntent = new Intent(getActivity(), DetailActivity.class);
+                textIntent.putExtra("data", (mForecastAdapter.getItem(position)));
+                startActivity(textIntent);
 
-                String text = mForecastAdapter.getItem(position);
-                Toast.makeText(getActivity(), text, duration).show();
             }
         });
         return rootView;
