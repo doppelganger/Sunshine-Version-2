@@ -192,9 +192,11 @@ public class ForecastFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] strings) {
             super.onPostExecute(strings);
-            mForecastAdapter.clear();
-            for (String item : strings) {
-                mForecastAdapter.add(item);
+            if (strings != null) {
+                mForecastAdapter.clear();
+                for (String item : strings) {
+                    mForecastAdapter.add(item);
+                }
             }
 
         }
