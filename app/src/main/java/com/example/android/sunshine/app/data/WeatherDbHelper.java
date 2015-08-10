@@ -70,6 +70,21 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
                 WeatherEntry.COLUMN_LOC_KEY + ") ON CONFLICT REPLACE);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_WEATHER_TABLE);
+
+        final String SQL_CREATE_LOCATION_TABLE = "CREATE TABLE " + LocationEntry.TABLE_NAME + " (" +
+
+                LocationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+                LocationEntry.COLUMN_LOCATION_SETTING + " TEXT NOT NULL, " +
+                LocationEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, " +
+                LocationEntry.COLUMN_COORD_LAT + " REAL NOT NULL, " +
+                LocationEntry.COLUMN_COORD_LONG + " REAL NOT NULL," +
+
+                // To assure the application have just one weather entry per day
+                // per location, it's created a UNIQUE constraint with REPLACE strategy
+                " UNIQUE (" +  LocationEntry.COLUMN_LOCATION_SETTING  + ") ON CONFLICT REPLACE);";
+
+        sqLiteDatabase.execSQL(SQL_CREATE_LOCATION_TABLE);
     }
 
     @Override
