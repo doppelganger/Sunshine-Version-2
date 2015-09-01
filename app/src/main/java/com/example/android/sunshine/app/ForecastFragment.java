@@ -38,7 +38,24 @@ import com.example.android.sunshine.app.data.WeatherContract;
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
+    // get row indices for our cursor
+    private static final String[] FORECAST_COLUMNS = {
+            // In this case the id needs to be fully qualified with a table name, since
+            // the content provider joins the location & weather tables in the background
+            // (both have an _id column)
+            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // using the location set by the user, which is only in the Location table.
+            // So the convenience is worth it.
+            WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
+            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherContract.LocationEntry.COLUMN_COORD_LAT,
+            WeatherContract.LocationEntry.COLUMN_COORD_LONG
+    };
     public static final int CURSOR_LOADER_ID = 0;
     private ForecastAdapter mForecastAdapter;
 
@@ -114,7 +131,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 locationSetting, System.currentTimeMillis());
 
         CursorLoader cursorLoader = new CursorLoader(getActivity(), weatherForLocationUri,
-                null, null, null, sortOrder);
+                FORECAST_COLUMNS, null, null, sortOrder);
 
         return cursorLoader;
     }
