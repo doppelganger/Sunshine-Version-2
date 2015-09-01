@@ -21,6 +21,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,11 +37,18 @@ import com.example.android.sunshine.app.data.WeatherContract;
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
-public class ForecastFragment extends Fragment {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int CURSOR_LOADER_ID = 0;
     private ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -69,19 +79,9 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-
-        // Sort order:  Ascending, by date.
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
-                locationSetting, System.currentTimeMillis());
-
-        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,
-                null, null, null, sortOrder);
-        mForecastAdapter = new ForecastAdapter(getActivity(), cur, 0);
-
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
         // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
@@ -102,5 +102,30 @@ public class ForecastFragment extends Fragment {
     public void onStart() {
         super.onStart();
         updateWeather();
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+
+        // Sort order:  Ascending, by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
+                locationSetting, System.currentTimeMillis());
+
+        CursorLoader cursorLoader = new CursorLoader(getActivity(), weatherForLocationUri,
+                null, null, null, sortOrder);
+
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mForecastAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        mForecastAdapter.swapCursor(null);
     }
 }
