@@ -144,7 +144,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public Loader onCreateLoader(int id, Bundle args) {
         String locationSetting = Utility.getPreferredLocation(getActivity());
 
-        // Sort order:  Ascending, by date.
+        // Sort order: Ascending, by date.
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
                 locationSetting, System.currentTimeMillis());
