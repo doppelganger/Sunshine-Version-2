@@ -164,4 +164,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader loader) {
         mForecastAdapter.swapCursor(null);
     }
+
+    public void onLocationChange() {
+        updateWeather();
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    }
 }
