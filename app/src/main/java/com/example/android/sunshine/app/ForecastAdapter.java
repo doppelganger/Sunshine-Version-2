@@ -29,6 +29,8 @@ public class ForecastAdapter extends CursorAdapter {
     static final int COL_WEATHER_CONDITION_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
+    static final int COL_WEATHER_STATUS_ID = 9;
+
 
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
@@ -46,8 +48,11 @@ public class ForecastAdapter extends CursorAdapter {
         // Read weather icon ID from cursor
         int weatherId = cursor.getInt(COL_WEATHER_ID);
         // Use placeholder image for now
-        viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
-
+        if (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY) {
+            viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(cursor.getInt(COL_WEATHER_STATUS_ID)));
+        } else {
+            viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(cursor.getInt(COL_WEATHER_STATUS_ID)));
+        }
         //Read date from cursor
         Long date = cursor.getLong(COL_WEATHER_DATE);
         viewHolder.dateView.setText(Utility.getDayName(context, date) + ", " + Utility.getFormattedMonthDay(context, date));

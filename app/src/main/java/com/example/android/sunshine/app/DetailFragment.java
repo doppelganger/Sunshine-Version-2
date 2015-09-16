@@ -39,6 +39,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_DEGREES,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
 
     };
 
@@ -53,6 +54,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int COL_WEATHER_WIND_SPEED = 6;
     private static final int COL_WEATHER_DEGREES = 7;
     private static final int COL_WEATHER_PRESSURE = 8;
+    private static final int COL_WEATHER_STATUS_ID = 9;
 
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
@@ -143,7 +145,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mForecastStr = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
 
         ImageView iconView = (ImageView) getView().findViewById(R.id.list_item_icon);
-        iconView.setImageResource(R.drawable.ic_launcher);
+        iconView.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_STATUS_ID)));
         TextView dateView = (TextView) getView().findViewById(R.id.list_item_date_textview);
         dateView.setText(dateString);
         TextView descriptionView = (TextView) getView().findViewById(R.id.list_item_forecast_textview);
