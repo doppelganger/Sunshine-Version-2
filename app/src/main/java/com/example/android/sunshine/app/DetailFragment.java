@@ -2,7 +2,6 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -29,7 +28,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
-    private static final String[] FORECAST_COLUMNS = {
+    private static final String[] DETAIL_COLUMNS = {
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
             WeatherContract.WeatherEntry.COLUMN_DATE,
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
@@ -109,15 +108,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // The detail Activity called via intent.  Inspect the intent for forecast data.
+        Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
-        CursorLoader cursorLoader = null;
-        if (intent != null) {
-            cursorLoader = new CursorLoader(getActivity(), Uri.parse(intent.getDataString()),
-                    FORECAST_COLUMNS, null, null, null);
+        if (intent == null || intent.getData() == null) {
+            return null;
         }
 
-        return cursorLoader;
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        return new CursorLoader(
+                getActivity(),
+                intent.getData(),
+                DETAIL_COLUMNS,
+                null,
+                null,
+                null
+        );
     }
 
     @Override
